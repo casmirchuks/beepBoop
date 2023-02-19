@@ -3,14 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { colors } from './../components/color';
 import {  RootTabParamList } from '../types';
-import Ionicons from 'react-native-vector-icons/Ionicons'
-Ionicons.loadFont()
+import { StyleSheet, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens
 import Home from '../screens/HomeScreen';
 import Display from '../screens/DisplayScreen';
 import Capture from '../screens/CaptureScreen';
-import { StyleSheet, View } from 'react-native';
 
 // Screen Names
 const homeScreen = "Home";
@@ -18,6 +17,8 @@ const displayScreen = "Display";
 const captureScreen = "Capture";
 
 const Navigation: FunctionComponent = () => {
+  Ionicons.loadFont();
+
   return (
     <NavigationContainer>
       <BottomNavigator/>
@@ -25,26 +26,25 @@ const Navigation: FunctionComponent = () => {
   )
 }
 
-
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomNavigator() {
   return (
     <Tab.Navigator 
-    initialRouteName={homeScreen}
-    screenOptions={{
-      tabBarStyle: {
-        position: 'absolute',
-        borderRadius: 15,
-        bottom: 25,
-        left: 20,
-        right: 20,
-        height: 80,
-        ...style.shadow
-      },
-      headerShown: false,
-      tabBarInactiveTintColor: colors.graydark,
-      tabBarActiveTintColor: colors.primary,
+        initialRouteName={homeScreen}
+        screenOptions={{
+        tabBarStyle: {
+          position: 'absolute',
+          borderRadius: 15,
+          bottom: 25,
+          left: 20,
+          right: 20,
+          height: 80,
+          ...style.shadow
+        },
+        headerShown: false,
+        tabBarInactiveTintColor: colors.graydark,
+        tabBarActiveTintColor: colors.primary,
       }}>
       <Tab.Screen 
         name={homeScreen} 

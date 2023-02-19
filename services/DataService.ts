@@ -1,24 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export type Person = {
+export interface Person {
   name: string ;
   surname: string;
 };
 
-export type Contact = {
+export interface Contact {
   email: string ;
   cell_no: string ;
 };
 
-export type Data = {
+export interface Data  {
   person: Person;
   contact: Contact;
+  loading: boolean
 };
 
 // default data
-const defaultData: Data = {
+export const defaultData: Data = {
   person: { name: 'Michael', surname: 'Baker' },
   contact: { email: 'michael@test.com', cell_no: '0825558364' },
+  loading: false
 };
 
 // gets data from the asyncStorage
@@ -40,9 +42,11 @@ const storeData = async (key: string, value: any) => {
   try {
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem(key, jsonValue)
+    return jsonValue
   } catch (e) {
     // saving error
     console.log(e);
+    return e;
   }
 }
 
@@ -53,7 +57,11 @@ export const DataService = {
       return data;
     }
     // If data does not exist in async storage, create it with default data
-    await storeData('person', defaultData.person);
+    try {
+      await storeData('person', defaultData.person);
+    } catch (error) {
+      console.log(error);
+    }
     return defaultData.person;
   },
 
@@ -63,14 +71,24 @@ export const DataService = {
       return data;
     }
     // If data does not exist in async storage, create it with default data
-    await storeData('contact', defaultData.contact);
+    try {
+      await storeData('contact', defaultData.contact);
+    } catch (error) {
+      console.log(error);
+      
+    }
     return defaultData.contact;
   },
 
   updateData: async (data: Data) => {
-    await storeData('person', data.person);
-    await storeData('contact', data.contact);
+    try {
+      await storeData('person', data.person);
+      await storeData('contact', data.contact);
+    } catch (error) {
+      console.log(error); 
+    }
   },
+  
 
 }
 

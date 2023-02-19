@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useState } from 'react'
 import {  StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { colors } from '../components/color';
+import { personData, contactData, updateData } from '../redux/data';
+import { useAppDispatch } from '../redux/hook';
 import { Data, DataService } from '../services/DataService';
 
 const CaptureScreen:FunctionComponent = () => {
@@ -10,16 +12,23 @@ const CaptureScreen:FunctionComponent = () => {
   const [email, setEmail] = useState('');
   const [cell_no, setCell_no] = useState('');
 
+  const dispatch = useAppDispatch()
+
   const saveInfo = async () => {
     const newData: Data = {
       person: { name: name, surname: surname },
       contact: { email: email, cell_no: cell_no },
+      loading: false
     };
-    await DataService.updateData(newData);
+    
+    dispatch(personData(newData.person))
+    dispatch(contactData(newData.contact))
+    dispatch(updateData(newData))
     setName('');
     setSurname('');
     setEmail('');
     setCell_no('');
+    await DataService.updateData(newData);
   };
 
   return (
@@ -52,7 +61,10 @@ const CaptureScreen:FunctionComponent = () => {
         onChangeText={setCell_no}
         value={cell_no}
       />
-      <TouchableOpacity onPress={saveInfo} style={[styles.buttonStyle, styles.shadow]}>
+      <TouchableOpacity 
+        onPress={() => {saveInfo()}} 
+        style={[styles.buttonStyle, styles.shadow]}
+        >
         <Text style={styles.buttonTextStyle}>
           Save Info
         </Text>

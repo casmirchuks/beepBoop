@@ -1,43 +1,49 @@
-import React, { FunctionComponent, useState, useEffect}from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { FunctionComponent }from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { colors } from '../components/color';
-import {DataService} from '../services/DataService';
-import { Person } from '../services/DataService';
-import { Contact } from '../services/DataService';
+import { updateData, personData, contactData, } from '../redux/data';
+import { useAppDispatch, useAppSelector } from '../redux/hook';
+import { Data, DataService } from '../services/DataService';
 
 const Display: FunctionComponent = () => {
-  const [person, setPerson] = useState<Person>();
-  const [contact, setContact] = useState<Contact>();
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const {person, contact, loading} = useAppSelector((state) => state.data.value );
+  const dispatch = useAppDispatch();
 
-  async function fetchData() {
-    const personData = await DataService.getPerson();
-    const contactData = await DataService.getContact();
-    setPerson(personData);
-    setContact(contactData);
-    // setDataLoaded(true);
-    // if(Object.keys(personData).length === 0 || Object.keys(contactData).length === 0) {
-    //   setDataLoaded(false);
-    // } else if (Object.keys(personData).length > 0 && Object.keys(contactData).length > 0){
-    //   setDataLoaded(true);
-    // } else {
-    //   setDataLoaded(false);
-    // }
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const getInfo = () => {
-    setDataLoaded(false);
-    fetchData();
+  const getInfoData = async () => {
+    const personInfoData = await DataService.getPerson();
+    const contactInfoData = await DataService.getContact();
+    if (personInfoData.name.length > 0 && personInfoData.surname.length > 0){
+      const storeData: Data = {
+        person: { name: personInfoData.name, surname: personInfoData.surname },
+        contact: { email: contactInfoData.email, cell_no: contactInfoData.cell_no },
+        loading: false
+      };
+      dispatch(personData(personInfoData))
+      dispatch(contactData(contactInfoData))
+      dispatch(updateData(storeData))
+    } else {
+      const defaultData: Data = {
+        person: { name: 'Michael', surname: 'Baker' },
+        contact: { email: 'michael@test.com', cell_no: '0825558364' },
+        loading: false
+      };
+      dispatch(updateData(defaultData));
+    }
   };
 
-  if (!dataLoaded) {
+  if (loading) {
     return (
       <View style={styles.container}>
+        <ActivityIndicator />
         <Text style={styles.text}>Loading data...</Text>
+        <TouchableOpacity 
+        onPress={() => {getInfoData()}} 
+        style={[styles.buttonStyle, styles.shadow]}
+        >
+        <Text style={styles.buttonTextStyle}>
+           Get Data
+        </Text>
+      </TouchableOpacity>
       </View>
     );
   }
@@ -48,11 +54,14 @@ const Display: FunctionComponent = () => {
     <Text style={styles.text}>Name: {person?.name} {person?.surname}</Text>
     <Text style={styles.text}>Email: {contact?.email}</Text>
     <Text style={styles.text}>Cell No.: {contact?.cell_no}</Text>
-    <TouchableOpacity onPress={getInfo} style={[styles.buttonStyle, styles.shadow]}>
-      <Text style={styles.buttonTextStyle}>
-        Get Info
-      </Text>
-    </TouchableOpacity>
+    <TouchableOpacity 
+        onPress={() => {getInfoData()}} 
+        style={[styles.buttonStyle, styles.shadow]}
+        >
+        <Text style={styles.buttonTextStyle}>
+           Get Data
+        </Text>
+      </TouchableOpacity>
   </View>
   )
 }
