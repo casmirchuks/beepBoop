@@ -3,7 +3,7 @@ import {  StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nati
 import { colors } from '../components/color';
 import { personData, contactData, updateData } from '../redux/data';
 import { useAppDispatch } from '../redux/hook';
-import { Data, DataService } from '../services/DataService';
+import { DataType, DataService } from '../services/DataService';
 
 const CaptureScreen:FunctionComponent = () => {
 
@@ -15,7 +15,7 @@ const CaptureScreen:FunctionComponent = () => {
   const dispatch = useAppDispatch()
 
   const saveInfo = async () => {
-    const newData: Data = {
+    const newData: DataType = {
       person: { name: name, surname: surname },
       contact: { email: email, cell_no: cell_no },
       loading: false

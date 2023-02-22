@@ -10,14 +10,14 @@ export interface Contact {
   cell_no: string ;
 };
 
-export interface Data  {
+export interface DataType  {
   person: Person;
   contact: Contact;
-  loading: boolean
+  loading: boolean;
 };
 
 // default data
-export const defaultData: Data = {
+export const defaultData: DataType = {
   person: { name: 'Michael', surname: 'Baker' },
   contact: { email: 'michael@test.com', cell_no: '0825558364' },
   loading: false
@@ -80,7 +80,7 @@ export const DataService = {
     return defaultData.contact;
   },
 
-  updateData: async (data: Data) => {
+  updateData: async (data: DataType) => {
     try {
       await storeData('person', data.person);
       await storeData('contact', data.contact);
@@ -89,6 +89,15 @@ export const DataService = {
     }
   },
   
+  // await AsyncStorage.removeItem('@MyApp_key')
+  removeValue: async () => {
+    try {
+      await AsyncStorage.removeItem('person')
+      await AsyncStorage.removeItem('contact')
+    } catch(e) {
+      console.log("Error removing data");
+    }
+  }
 
 }
 

@@ -90,8 +90,7 @@ function BottomNavigator() {
             </View>
           ),
         }}
-      >
-      </Tab.Screen>
+      ></Tab.Screen>
     </Tab.Navigator>
   )
 }

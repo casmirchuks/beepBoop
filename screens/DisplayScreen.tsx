@@ -1,9 +1,9 @@
 import React, { FunctionComponent }from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { colors } from '../components/color';
 import { updateData, personData, contactData, } from '../redux/data';
 import { useAppDispatch, useAppSelector } from '../redux/hook';
-import { Data, DataService } from '../services/DataService';
+import { DataType, DataService } from '../services/DataService';
 
 const Display: FunctionComponent = () => {
   const {person, contact, loading} = useAppSelector((state) => state.data.value );
@@ -13,7 +13,7 @@ const Display: FunctionComponent = () => {
     const personInfoData = await DataService.getPerson();
     const contactInfoData = await DataService.getContact();
     if (personInfoData.name.length > 0 && personInfoData.surname.length > 0){
-      const storeData: Data = {
+      const storeData: DataType = {
         person: { name: personInfoData.name, surname: personInfoData.surname },
         contact: { email: contactInfoData.email, cell_no: contactInfoData.cell_no },
         loading: false
@@ -22,7 +22,7 @@ const Display: FunctionComponent = () => {
       dispatch(contactData(contactInfoData))
       dispatch(updateData(storeData))
     } else {
-      const defaultData: Data = {
+      const defaultData: DataType = {
         person: { name: 'Michael', surname: 'Baker' },
         contact: { email: 'michael@test.com', cell_no: '0825558364' },
         loading: false
@@ -30,6 +30,17 @@ const Display: FunctionComponent = () => {
       dispatch(updateData(defaultData));
     }
   };
+
+  const clearData = async () => {
+    await DataService.removeValue();
+    Alert.alert('Reset Storage', 'All data in storage has be deleted', 
+    [
+      {
+        text: 'OK', 
+        onPress: () => console.log('OK Pressed'),
+      },
+    ]);
+  }
 
   if (loading) {
     return (
@@ -55,13 +66,21 @@ const Display: FunctionComponent = () => {
     <Text style={styles.text}>Email: {contact?.email}</Text>
     <Text style={styles.text}>Cell No.: {contact?.cell_no}</Text>
     <TouchableOpacity 
-        onPress={() => {getInfoData()}} 
-        style={[styles.buttonStyle, styles.shadow]}
-        >
-        <Text style={styles.buttonTextStyle}>
-           Get Data
-        </Text>
-      </TouchableOpacity>
+      onPress={() => {getInfoData()}} 
+      style={[styles.buttonStyle, styles.shadow]}
+      >
+      <Text style={styles.buttonTextStyle}>
+          Get Data
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity 
+      onPress={() => {clearData()}} 
+      style={[styles.buttonStyle, styles.shadow]}
+      >
+      <Text style={styles.buttonTextStyle}>
+          Clear Storage
+      </Text>
+    </TouchableOpacity>
   </View>
   )
 }

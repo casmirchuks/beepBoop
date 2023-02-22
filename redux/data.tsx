@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {Person, Contact, Data} from './../services/DataService'
+import {Person, Contact, DataType} from './../services/DataService'
 
-const initialStateValue: Data = {
+const initialStateValue: DataType = {
     person: { name: '', surname: '' },
     contact: {email: '', cell_no: ''}, 
     loading: true, 
@@ -17,7 +17,7 @@ export const dataSlice = createSlice({
     contactData: (state, action: PayloadAction<Contact>) => {
       state.value.contact = action.payload
     },
-    updateData: (state, action: PayloadAction<Data>) => {
+    updateData: (state, action: PayloadAction<DataType>) => {
       state.value = action.payload
     }
   }
