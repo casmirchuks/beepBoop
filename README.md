@@ -8,8 +8,6 @@ To run this app, you must have Node.js and NPM installed on your machine. You ca
 
     Clone this repository to your local machine using the following command:
 
-    bash
-
 # Install the required dependencies by running:
 
 npm install
